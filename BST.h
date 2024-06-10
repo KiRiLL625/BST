@@ -135,7 +135,6 @@ private:
                 root->right = remove(root->right, temp->key); // Удаляем узел
             }
         }
-        // Если дерево состоит только из одного узла
         if (root == nullptr)
             return root;
         // Обновляем высоту текущего узла
@@ -230,23 +229,25 @@ public:
         return Iterator(nullptr);
     }
 
-    Iterator cbegin() const{
-        Node<T>* current = root;
-        while (current->left != nullptr)
-            current = current->left;
-        return Iterator(current);
-    }
-
-    Iterator cend() const{
-        return Iterator(nullptr);
-    }
-
     int size() {
         int count = 0;
         for (T key : *this) {
             count++;
         }
         return count;
+    }
+
+    void deleteNode(Node<T>* node) {
+        if (node == nullptr) {
+            return;
+        }
+        deleteNode(node->left);
+        deleteNode(node->right);
+        delete node;
+    }
+
+    ~AVLTree() {
+        deleteNode(root);
     }
 
     friend void map(std::function<void(T)> f, Node<T>* node) {
